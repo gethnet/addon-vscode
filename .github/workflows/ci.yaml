@@ -4,6 +4,7 @@ name: CI
 # yamllint disable-line rule:truthy
 on:
   push:
+    branches: [gethnet/main]
   pull_request:
     types:
       - opened
@@ -12,5 +13,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  workflows:
-    uses: hassio-addons/workflows/.github/workflows/addon-ci.yaml@main
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check config
+        uses: home-assistant/actions/addon-check@master
+
+      - name: Build test
+        uses: home-assistant/actions/addon-build@master
+        with:
+          arch: amd64
+          addon: vscode

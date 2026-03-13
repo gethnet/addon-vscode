@@ -1,9 +1,9 @@
 ---
-name: Studio Code Server
+name: "Studio Code Server (Fork)"
 version: dev
-slug: vscode
-description: Fully featured Visual Studio Code (VSCode) experience integrated in the Home Assistant frontend.
-url: https://github.com/hassio-addons/addon-vscode
+slug: vscode-fork
+description: "Personal fork: Fully featured Visual Studio Code (VSCode) experience integrated in the Home Assistant frontend."
+url: "https://github.com/gethnet/addon-vscode"
 ingress: true
 ingress_port: 1337
 ingress_stream: true

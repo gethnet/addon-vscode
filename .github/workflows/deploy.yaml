@@ -6,14 +6,33 @@ on:
   release:
     types:
       - published
-  workflow_run:
-    workflows: ["CI"]
-    branches: [main]
-    types:
-      - completed
+  workflow_dispatch:
 
 jobs:
-  workflows:
-    uses: hassio-addons/workflows/.github/workflows/addon-deploy.yaml@main
-    secrets:
-      DISPATCH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Addon
+        uses: home-assistant/actions/addon-publish@master
+        with:
+          ignore_images: true
+          registry: ghcr.io
+          repository: ${{ github.repository_owner }}/vscode-fork
+          addon: vscode
+          arch: |
+            - aarch64
+            - amd64

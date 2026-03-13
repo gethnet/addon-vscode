@@ -1,0 +1,51 @@
+---
+name: Update Addon
+
+# yamllint disable-line rule:truthy
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for updates
+        id: check
+        run: |
+          # Get latest code-server version
+          LATEST_CODE_SERVER=$(curl -s https://api.github.com/repos/coder/code-server/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          # Get latest HA CLI version
+          LATEST_HA_CLI=$(curl -s https://api.github.com/repos/home-assistant/cli/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          # Get latest debian-base version
+          LATEST_DEBIAN_BASE=$(curl -s https://api.github.com/repos/hassio-addons/app-debian-base/releases/latest | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+
+          echo "LATEST_CODE_SERVER=$LATEST_CODE_SERVER" >> $GITHUB_ENV
+          echo "LATEST_HA_CLI=$LATEST_HA_CLI" >> $GITHUB_ENV
+          echo "LATEST_DEBIAN_BASE=$LATEST_DEBIAN_BASE" >> $GITHUB_ENV
+
+      - name: Update files
+        run: |
+          sed -i "s/ARG CODE_SERVER_VERSION=\"[^\"]*\"/ARG CODE_SERVER_VERSION=\"${{ env.LATEST_CODE_SERVER }}\"/" vscode/Dockerfile
+          sed -i "s/ARG HA_CLI_VERSION=\"[^\"]*\"/ARG HA_CLI_VERSION=\"${{ env.LATEST_HA_CLI }}\"/" vscode/Dockerfile
+          sed -i "s/debian-base:[0-9.]*/debian-base:${{ env.LATEST_DEBIAN_BASE }}/" vscode/Dockerfile
+          sed -i "s/debian-base:[0-9.]*/debian-base:${{ env.LATEST_DEBIAN_BASE }}/" vscode/build.yaml
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "⬆️ Update core components to latest versions"
+          title: "⬆️ Update core components"
+          base: gethnet/main
+          body: |
+            Automated update of core components:
+            - code-server: ${{ env.LATEST_CODE_SERVER }}
+            - HA CLI: ${{ env.LATEST_HA_CLI }}
+            - debian-base: ${{ env.LATEST_DEBIAN_BASE }}
+          branch: auto-update
+          delete-branch: true

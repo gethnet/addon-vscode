@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base:9.1.0
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base:9.2.0
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
@@ -20,35 +20,35 @@ COPY vscode.extensions /root/vscode.extensions
 
 # Setup base system
 ARG BUILD_ARCH=amd64
-ARG CODE_SERVER_VERSION="v4.107.0"
-ARG HA_CLI_VERSION="4.45.0"
+ARG CODE_SERVER_VERSION="v4.111.0"
+ARG HA_CLI_VERSION="4.46.0"
 # hadolint ignore=SC2181, DL3008
 RUN \
     apt-get update \
     \
     && apt-get install -y --no-install-recommends \
-        ack=3.8.1-1 \
-        libarchive-tools=3.7.4-4 \
-        build-essential=12.12 \
-        colordiff=1.0.21-1 \
-        git=1:2.47.3-0+deb13u1 \
-        iputils-ping=3:20240905-3 \
-        locales=2.41-12 \
-        mariadb-client=1:11.8.3-0+deb13u1 \
-        mosquitto-clients=2.0.21-1 \
-        net-tools=2.10-1.3 \
-        nmap=7.95+dfsg-3 \
-        openssh-client=1:10.0p1-7 \
-        openssl=3.5.4-1~deb13u1 \
-        python3-dev=3.13.5-1 \
-        python3-venv=3.13.5-1 \
-        python3=3.13.5-1 \
-        unzip=6.0-29 \
-        uuid-runtime=2.41-5 \
-        wget=1.25.0-2 \
-        zip=3.0-15 \
-        zsh=5.9-8+b14 \
-        less=668-1 \
+        ack \
+        libarchive-tools \
+        build-essential \
+        colordiff \
+        git \
+        iputils-ping \
+        locales \
+        mariadb-client \
+        mosquitto-clients \
+        net-tools \
+        nmap \
+        openssh-client \
+        openssl \
+        python3-dev \
+        python3-venv \
+        python3 \
+        unzip \
+        uuid-runtime \
+        wget \
+        zip \
+        zsh \
+        less \
     \
     && sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
     && locale-gen \
