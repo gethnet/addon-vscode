@@ -1,6 +1,6 @@
 ---
 name: "Studio Code Server (Fork)"
-version: dev
+version: 1.0.0
 slug: vscode-fork
 description: "Personal fork: Fully featured Visual Studio Code (VSCode) experience integrated in the Home Assistant frontend."
 url: "https://github.com/gethnet/addon-vscode"
